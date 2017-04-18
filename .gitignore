@@ -1,0 +1,11 @@
+*.tmp
+.DS_Store
+log
+npm-debug.log
+*.swp
+node_modules
+.idea
+fecs.*
+.tmp
+dist
+test
