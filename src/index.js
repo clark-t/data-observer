@@ -3,17 +3,18 @@
  * @author clarkt (clarktanglei@163.com)
  */
 
-import {Depend, pushTarget, popTarget} from './depend';
+import {Depend} from './depend';
+import {def} from './util';
 
 export default class DataReact {
-    constructor(opts = {}) {
-        opts.data && initData(this, opts);
-        opts.computed && initComputed(this, opts);
+    constructor({data, computed, watch = {}} = {}) {
+        data && initData(this, data, watch);
+        computed && initComputed(this, computed, watch);
         this._inited = true;
     }
 }
 
-function initData(ctx, {data, watch = {}}) {
+function initData(ctx, data, watch) {
     data = data.call(ctx);
     let keys = Object.keys(data);
 
@@ -26,14 +27,12 @@ function initData(ctx, {data, watch = {}}) {
 function defineData(ctx, key, val, cb) {
     const dep = new Depend(ctx);
 
-    Object.defineProperty(ctx, key, {
-        enumerable: true,
-        configurable: true,
-        get() {
+    def(ctx, key, {
+        getter() {
             dep.add();
             return val;
         },
-        set(newVal) {
+        setter(newVal) {
             let oldVal = val;
 
             if (newVal === oldVal) {
@@ -48,7 +47,7 @@ function defineData(ctx, key, val, cb) {
     });
 }
 
-function initComputed(ctx, {computed, watch = {}}) {
+function initComputed(ctx, computed, watch) {
     ctx._changeMap = {};
 
     let keys = Object.keys(computed);
@@ -69,21 +68,18 @@ function defineComputed(ctx, key, getter, cb) {
     let val;
     const dep = new Depend(ctx);
 
-    Object.defineProperty(ctx, key, {
-        enumerable: true,
-        configurable: true,
-        get() {
+    def(ctx, key, {
+        getter() {
             dep.add();
 
             if (ctx._changeMap[key]) {
                 ctx._changeMap[key] = false;
 
-                pushTarget(key);
-
                 let oldVal = val;
-                val = getter.call(ctx);
 
-                popTarget();
+                Depend.pushTarget(key);
+                val = getter.call(ctx);
+                Depend.popTarget();
 
                 if (val === oldVal) {
                     return;
@@ -96,7 +92,6 @@ function defineComputed(ctx, key, getter, cb) {
             }
 
             return val;
-        },
-        set() {}
+        }
     });
 }

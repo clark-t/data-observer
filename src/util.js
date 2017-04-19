@@ -9,7 +9,7 @@ export class HashSet {
     }
 
     add(obj) {
-        if (!this.sets.some(set => obj === set)) {
+        if (this.sets.indexOf(obj) < 0) {
             this.sets.push(obj);
         }
     }
@@ -19,18 +19,31 @@ export class HashSet {
     }
 }
 
-export function getData(dataPath) {
+export function parsePath(dataPath) {
     let paths = dataPath.split('.');
 
-    return function (dr) {
-        let data = dr;
+    return function (obj) {
+        let result = obj;
 
         for (let i = 0, max = paths.length; i < max; i++) {
-            data = data[paths[i]];
+            result = result[paths[i]];
         }
 
-        return data;
+        return result;
     };
 }
 
 export function noop() {}
+
+export function common(arr1, arr2) {
+    return arr2.filter(item2 => arr1.indexOf(item2) > -1);
+}
+
+export function def(obj, key, {getter = noop, setter = noop}) {
+    Object.defineProperty(obj, key, {
+        enumerable: true,
+        configurable: true,
+        get: getter,
+        set: setter
+    });
+}

@@ -6,8 +6,8 @@
 import {HashSet} from './util';
 
 export class Depend {
-    constructor(dr) {
-        this.dr = dr;
+    constructor(ctx) {
+        this.ctx = ctx;
         this.subs = new HashSet();
     }
 
@@ -22,11 +22,11 @@ export class Depend {
         let max = subs.length;
 
         for (let i = 0; i < max; i++) {
-            this.dr._changeMap[subs[i]] = true;
+            this.ctx._changeMap[subs[i]] = true;
         }
 
         for (let i = 0; i < max; i++) {
-            this.dr[subs[i]];
+            this.ctx[subs[i]];
         }
     }
 }
@@ -34,15 +34,15 @@ export class Depend {
 Depend.TARGET = null;
 const TARGET_STACK = [];
 
-export function pushTarget(t) {
+Depend.pushTarget = function (t) {
     if (Depend.TARGET != null) {
         TARGET_STACK.push(Depend.TARGET);
     }
 
     Depend.TARGET = t;
-}
+};
 
-export function popTarget() {
+Depend.popTarget = function () {
     Depend.TARGET = TARGET_STACK.length ? TARGET_STACK.pop() : null;
-}
+};
 
