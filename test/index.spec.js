@@ -1,3 +1,8 @@
+/**
+ * @file 测试文件
+ * @author clarkt (clarktanglei@163.com)
+ */
+
 var DataReact = require('../dist/data-react');
 var expect = require('chai').expect;
 

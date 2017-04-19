@@ -1,4 +1,10 @@
-var DataReact = require('../dist/data-react');
+/**
+ * @file 测试文件
+ * @author clarkt (clarktanglei@163.com)
+ */
+
+/* eslint-disable no-console */
+/* global DataReact */
 
 var dr = new DataReact({
     data: function () {
@@ -34,9 +40,9 @@ var dr = new DataReact({
 });
 
 dr.c = 'cc';
-console.log('---')
+console.log('---');
 dr.d = false;
-console.log('---')
+console.log('---');
 dr.c = 'ccc';
-console.log('---')
+console.log('---');
 dr.d = true;

@@ -1,49 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh">
 <head>
-    <title></title>
+    <meta charset="utf-8">
+    <title>test</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <!-- htmlcs-disable -->
+    <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1,user-scalable=no,minimal-ui">
+    <!-- htmlcs-enable -->
 </head>
 <body>
     <script src="../dist/data-react.js"></script>
-    <script>
-        var dr = new DataReact({
-            data: function () {
-                return {
-                    a: 'a',
-                    b: 'b',
-                    c: 'c',
-                    d: true
-                };
-            },
-            computed: {
-                e: function () {
-                    return this.a + '-' + this.b;
-                },
-                f: function (val) {
-                    return '~' + this.e;
-                },
-                g: function (val) {
-                    return this.d ? ('*' + this.c) : ('**' + this.e);
-                }
-            },
-            watch: {
-                e: function (val) {
-                    console.log('e:' + val);
-                },
-                f: function (val) {
-                    console.log('f:' + val);
-                },
-                g: function (val) {
-                    console.log('g:' + val);
-                }
-            }
-        });
-
-        dr.c = 'cc';
-        console.log('---')
-        dr.d = false;
-        console.log('---')
-        dr.c = 'ccc';
-    </script>
+    <script src="./test.js"></script>
 </body>
 </html>

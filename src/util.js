@@ -1,3 +1,7 @@
+/**
+ * @file 工具文件
+ * @author clarkt (clarktanglei@163.com)
+ */
 
 export class HashSet {
     constructor() {
