@@ -30,10 +30,7 @@ function defineData(ctx, key, val, cb) {
         enumerable: true,
         configurable: true,
         get() {
-            if (Depend.TARGET) {
-                dep.add(Depend.TARGET);
-            }
-
+            dep.add();
             return val;
         },
         set(newVal) {
@@ -76,9 +73,7 @@ function defineComputed(ctx, key, getter, cb) {
         enumerable: true,
         configurable: true,
         get() {
-            if (Depend.TARGET) {
-                dep.add(Depend.TARGET);
-            }
+            dep.add();
 
             if (ctx._changeMap[key]) {
                 ctx._changeMap[key] = false;

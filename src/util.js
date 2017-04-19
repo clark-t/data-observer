@@ -32,3 +32,5 @@ export function getData(dataPath) {
         return data;
     };
 }
+
+export function noop() {}

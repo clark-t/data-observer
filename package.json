@@ -3,8 +3,8 @@
   "version": "1.0.1",
   "description": "A simple Vue alike watcher and computed realization. 一个简单Vuejs的watch和computed功能实现的小框架.",
   "scripts": {
-    "build": "node ./node_modules/webpack/bin/webpack --config webpack.config.js -p",
-    "test": "node ./node_modules/mocha-webpack/bin/mocha-webpack test/*.spec.js"
+    "build": "rm -rf ./dist & node ./node_modules/webpack/bin/webpack --config webpack.config.js -p",
+    "test": "node ./node_modules/webpack/bin/webpack --config webpack.config.js -d & node ./node_modules/mocha-webpack/bin/mocha-webpack test/*.spec.js"
   },
   "dependencies": {},
   "author": "clarkt (clarktanglei@163.com)",

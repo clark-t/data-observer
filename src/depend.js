@@ -11,8 +11,10 @@ export class Depend {
         this.subs = new HashSet();
     }
 
-    add(target) {
-        this.subs.add(target);
+    add() {
+        if (Depend.TARGET) {
+            this.subs.add(Depend.TARGET);
+        }
     }
 
     notify() {
