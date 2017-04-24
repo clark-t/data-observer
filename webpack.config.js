@@ -9,8 +9,8 @@ module.exports = {
     },
     output: {
         path: './dist',
-        filename: 'data-react.js',
-        library: 'DataReact',
+        filename: 'data-observer.js',
+        library: 'DataObserver',
         libraryTarget: 'umd',
         umdNamedDefine: true
     },
