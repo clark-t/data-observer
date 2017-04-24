@@ -4,9 +4,9 @@
  */
 
 import {Depend} from './depend';
-import {def} from './util';
+import {proxy, isObject} from './util';
 
-export default class DataReact {
+export default class DataObserver {
     constructor({data, computed, watch = {}} = {}) {
         data && initData(this, data, watch);
         computed && initComputed(this, computed, watch);
@@ -20,14 +20,15 @@ function initData(ctx, data, watch) {
 
     for (let i = 0, max = keys.length; i < max; i++) {
         let key = keys[i];
-        defineData(ctx, key, data[key], watch[key]);
+        defineData(ctx, key, data[key], watch, key);
     }
 }
 
-function defineData(ctx, key, val, cb) {
+function defineData(ctx, key, val, watch, watchKey) {
     const dep = new Depend(ctx);
+    let cb = watch[watchKey];
 
-    def(ctx, key, {
+    proxy(ctx, key, {
         getter() {
             dep.add();
             return val;
@@ -41,10 +42,28 @@ function defineData(ctx, key, val, cb) {
 
             val = newVal;
 
+            if (isObject(val)) {
+                defineChildData(key, val, watch, watchKey);
+            }
+
             dep.notify();
             cb && cb(val, oldVal);
         }
     });
+
+    if (isObject(val)) {
+        defineChildData(key, val, watch, watchKey);
+    }
+}
+
+function defineChildData(key, val, watch, watchKey) {
+    let childKeys = Object.keys(val);
+
+    for (let i = 0, max = childKeys.length; i < max; i++) {
+        let childKey = childKeys[i];
+        let childWatchKey = watchKey + '.' + childKey;
+        defineData(val, childKey, val[childKey], watch, childWatchKey);
+    }
 }
 
 function initComputed(ctx, computed, watch) {
@@ -68,7 +87,7 @@ function defineComputed(ctx, key, getter, cb) {
     let val;
     const dep = new Depend(ctx);
 
-    def(ctx, key, {
+    proxy(ctx, key, {
         getter() {
             dep.add();
 

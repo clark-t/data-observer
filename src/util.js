@@ -19,19 +19,11 @@ export class HashSet {
     }
 }
 
-export function parsePath(dataPath) {
-    let paths = dataPath.split('.');
-
-    return function (obj) {
-        let result = obj;
-
-        for (let i = 0, max = paths.length; i < max; i++) {
-            result = result[paths[i]];
-        }
-
-        return result;
-    };
+export function isObject(obj) {
+    return Object.prototype.toString.call(obj) === '[object Object]';
 }
+
+export const isArray = Array.isArray;
 
 export function noop() {}
 
@@ -39,11 +31,19 @@ export function common(arr1, arr2) {
     return arr2.filter(item2 => arr1.indexOf(item2) > -1);
 }
 
-export function def(obj, key, {getter = noop, setter = noop}) {
+export function proxy(obj, key, {getter = noop, setter = noop}) {
     Object.defineProperty(obj, key, {
         enumerable: true,
         configurable: true,
         get: getter,
         set: setter
+    });
+}
+
+export function def(obj, key, val) {
+    Object.defineProperty(obj, key, {
+        enumerable: true,
+        configurable: true,
+        value: val
     });
 }

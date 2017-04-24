@@ -6,7 +6,7 @@
 /* eslint-disable no-console */
 /* global DataReact */
 
-var dr = new DataReact({
+var dr = new DataObserver({
     data: function () {
         return {
             a: 'a',

@@ -3,7 +3,7 @@
  * @author clarkt (clarktanglei@163.com)
  */
 
-var DataReact = require('../dist/data-react');
+var DataObserver = require('../dist/data-observer');
 var expect = require('chai').expect;
 
 describe('test', function () {
@@ -65,7 +65,7 @@ describe('test', function () {
 
         var index = 0;
 
-        var dr = new DataReact({
+        var dr = new DataObserver({
             data: function () {
                 return {
                     a: 'a',
@@ -106,4 +106,91 @@ describe('test', function () {
             expect(arr[index].weight.val).to.be.equal(arr[index].weight.expect);
         }
     });
+
+    it('should be equal', function () {
+        var arr = [
+            {
+                key: 'a.a1.a11',
+                val: 'aa11',
+                expect: {
+                    'a.a1.a11': {
+                        newVal: 'aa11',
+                        oldVal: 'a11'
+                    }
+                }
+            },
+            {
+                key: 'a.a1',
+                val: {
+                    a11: 'cc'
+                }
+            },
+            {
+                key: 'a.a1.a11',
+                val: 'aaa11',
+                expect: {
+                    'a.a1.a11': {
+                        newVal: 'aaa11',
+                        oldVal: 'cc'
+                    }
+                }
+            },
+            {
+                key: 'a',
+                val: {
+                    a1: {
+                        a11: 'ccc'
+                    }
+                }
+            },
+            {
+                key: 'a.a1.a11',
+                val: 'aaaa11',
+                expect: {
+                    'a.a1.a11': {
+                        newVal: 'aaaa11',
+                        oldVal: 'ccc'
+                    }
+                }
+            }
+        ];
+        var index = 0;
+
+        var dr = new DataObserver({
+            data: function () {
+                return {
+                    a: {
+                        a1: {
+                            a11: 'a11'
+                        },
+                        a2: 'a2'
+                    },
+                    b: 'b'
+                };
+            },
+            watch: {
+                'a.a1.a11': function (val, oldVal) {
+                    expect(val).to.be.equal(arr[index]['a.a1.a11'].newVal);
+                    expect(oldVal).to.be.equal(arr[index]['a.a1.a11'].oldVal);
+                }
+            }
+        });
+
+        for (var max = arr.length; index < max; index++) {
+            /* eslint-disable */
+            var obj = getter(dr, arr[index].key);
+            obj = arr[index].val;
+            /* eslint-enable */
+        }
+    });
 });
+
+function getter(obj, keyStr) {
+    var arr = keyStr.split('.');
+    var result = obj;
+    for (var i = 0, max = arr.length; i < max; i++) {
+        result = result[arr[i]];
+    }
+
+    return result;
+}

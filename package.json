@@ -10,7 +10,7 @@
   "author": "clarkt (clarktanglei@163.com)",
   "repository": {
     "type": "git",
-    "url": "https://github.com/clark-t/data-react.git"
+    "url": "https://github.com/clark-t/data-observer.git"
   },
   "license": "BSD",
   "devDependencies": {
