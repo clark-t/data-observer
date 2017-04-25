@@ -4,7 +4,7 @@
  */
 
 import {Depend} from './depend';
-import {proxy, isObject} from './util';
+import {def, instance} from './util';
 
 export default class DataObserver {
     constructor({data, computed, watch = {}} = {}) {
@@ -26,9 +26,11 @@ function initData(ctx, data, watch) {
 
 function defineData(ctx, key, val, watch, watchKey) {
     const dep = new Depend(ctx);
+    ctx.__dep__ = dep;
+
     let cb = watch[watchKey];
 
-    proxy(ctx, key, {
+    def(ctx, key, {
         getter() {
             dep.add();
             return val;
@@ -42,27 +44,34 @@ function defineData(ctx, key, val, watch, watchKey) {
 
             val = newVal;
 
-            if (isObject(val)) {
-                defineChildData(key, val, watch, watchKey);
-            }
+            defineChild(key, val, watch, watchKey);
 
             dep.notify();
             cb && cb(val, oldVal);
         }
     });
 
-    if (isObject(val)) {
-        defineChildData(key, val, watch, watchKey);
-    }
+    defineChild(key, val, watch, watchKey);
 }
 
-function defineChildData(key, val, watch, watchKey) {
-    let childKeys = Object.keys(val);
+function defineChild(key, obj, watch, watchKey) {
+    let inst = instance(obj);
 
-    for (let i = 0, max = childKeys.length; i < max; i++) {
-        let childKey = childKeys[i];
-        let childWatchKey = watchKey + '.' + childKey;
-        defineData(val, childKey, val[childKey], watch, childWatchKey);
+    if (inst === 'Object') {
+        let childKeys = Object.keys(obj);
+
+        for (let i = 0, max = childKeys.length; i < max; i++) {
+            let childKey = childKeys[i];
+            let childWatchKey = watchKey + '.' + childKey;
+            defineData(obj, childKey, obj[childKey], watch, childWatchKey);
+        }
+    }
+    else if (inst === 'Array') {
+        for (let i = 0, max = childKeys.length; i < max; i++) {
+            let childKey = childKeys[i];
+            let childWatchKey = watchKey + '.' + childKey;
+            defineData(obj, childKey, obj[childKey], watch, childWatchKey);
+        }
     }
 }
 
@@ -87,7 +96,7 @@ function defineComputed(ctx, key, getter, cb) {
     let val;
     const dep = new Depend(ctx);
 
-    proxy(ctx, key, {
+    def(ctx, key, {
         getter() {
             dep.add();
 
